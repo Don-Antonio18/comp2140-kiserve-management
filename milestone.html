@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Milestones</title>
+  <style>
+      /* shared site header styles (matches index.html) */
+      .site-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#ffffff;border-bottom:1px solid #e6e9ef;border-radius:6px}
+      .site-header .brand h1{font-size:20px;margin:0;color:#1f2a44}
+      .site-nav{display:flex;gap:10px;align-items:center}
+      .site-nav .nav-link{padding:8px 12px;text-decoration:none;border-radius:6px;color:#0366d6;font-weight:600;background:transparent}
+      .site-nav .nav-link:hover{background:#f0f6ff}
+      @media(max-width:600px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+    .input-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    input {
+      flex: 1;
+    }
+    input[type="date"] {
+      max-width: 170px;
+    }
+    select#projectSelect {
+      max-width: 220px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background: white;
+    }
+    .project-badge {
+      display: inline-block;
+      background: #eef6ff;
+      color: #0366d6;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-right: 8px;
+    }
+    .due-date {
+      margin-left: 12px;
+      font-size: 13px;
+      color: #555;
+      margin-right: 10px;
+    }
+    .milestone-item.overdue {
+      border-left: 4px solid #ff6b6b;
+      background-color: #fff5f5;
+    }
+    .milestone-item.overdue .due-date {
+      color: #c00;
+      font-weight: 600;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .milestone-list {
+      list-style: none;
+    }
+    .milestone-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+    }
+    .milestone-item.completed {
+      background-color: #e8f5e9;
+      text-decoration: line-through;
+      color: #888;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"><h1>Project Manager</h1></div>
+    <nav class="site-nav">
+      <a class="nav-link" href="view-project.html">Home</a>
+      <a class="nav-link" href="index.html">Create Project</a>
+      <a class="nav-link" href="milestone.html">View Milestones</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>📋 Project Milestones</h1>
+    
+    <div class="input-section">
+      <input type="text" id="milestoneInput" placeholder="Enter milestone name...">
+      <select id="projectSelect" aria-label="Project" title="Attach to project"></select>
+      <input type="date" id="milestoneDue" aria-label="Projected due date" title="Projected due date">
+      <button onclick="addMilestone()">Add Milestone</button>
+    </div>
+
+    <ul class="milestone-list" id="milestoneList"></ul>
+  </div>
+
+    <script>
+    const MILESTONE_KEY = 'myMilestones';
+    // Storage key used by the main app (index.html)
+    const STORAGE_KEY = 'myProjects';
+
+    // In-memory milestones array (persisted to localStorage)
+    let milestones = [];
+    const knownProjectIds = new Set();
+
+    function getProjectsFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        return JSON.parse(raw) || [];
+      } catch (e) {
+        console.error('Failed to parse projects from storage', e);
+        return [];
+      }
+    }
+
+    function loadMilestones() {
+      try {
+        const raw = localStorage.getItem(MILESTONE_KEY);
+        if (!raw) {
+          milestones = [];
+        } else {
+          milestones = JSON.parse(raw) || [];
+        }
+        knownProjectIds.clear();
+        milestones.forEach(m => { if (m.projectId != null) knownProjectIds.add(m.projectId); });
+      } catch (e) {
+        console.error('Failed to load milestones', e);
+        milestones = [];
+      }
+    }
+
+    function saveMilestones() {
+      try {
+        localStorage.setItem(MILESTONE_KEY, JSON.stringify(milestones));
+      } catch (e) {
+        console.error('Failed to save milestones', e);
+      }
+    }
+
+    function populateProjects() {
+      const sel = document.getElementById('projectSelect');
+      const projects = getProjectsFromStorage();
+      sel.innerHTML = '<option value="">Select project...</option>' + projects.map(p => `
+        <option value="${p.id}">${escapeHtml(p.name || 'Untitled')}</option>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    }
+
+    function formatDate(isoDate) {
+      if (!isoDate) return '';
+      try {
+        const d = new Date(isoDate + 'T00:00:00');
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch (e) {
+        return isoDate;
+      }
+    }
+
+    function syncProjectsToMilestones() {
+      // Ensure we have the latest projects and milestones
+      const projects = getProjectsFromStorage();
+      const projectIds = new Set(projects.map(p => p.id));
+
+      // Remove milestones that reference deleted projects
+      for (let i = milestones.length - 1; i >= 0; i--) {
+        const m = milestones[i];
+        if (m.projectId != null && !projectIds.has(m.projectId)) {
+          milestones.splice(i, 1);
+        }
+      }
+
+      // For each project, if not known, create Commence & Conclude
+      projects.forEach(p => {
+        if (!knownProjectIds.has(p.id)) {
+          const startDue = p.startDate || '';
+          const endDue = p.dueDate || '';
+          milestones.push({ id: Date.now() + Math.floor(Math.random()*1000), name: 'Commence', text: 'Commence', due: startDue, completed: false, projectId: p.id, projectName: p.name });
+          milestones.push({ id: Date.now() + 2000 + Math.floor(Math.random()*1000), name: 'Conclude', text: 'Conclude', due: endDue, completed: false, projectId: p.id, projectName: p.name });
+          knownProjectIds.add(p.id);
+        }
+      });
+
+      saveMilestones();
+      populateProjects();
+      renderMilestones();
+
+      // Ensure project statuses reflect milestone completion
+      projects.forEach(p => updateProjectStatusForProject(p.id));
+    }
+
+    function addMilestone() {
+      const input = document.getElementById('milestoneInput');
+      const text = input.value.trim();
+      if (text === '') {
+        alert('Please enter a milestone name');
+        return;
+      }
+
+      const projectSel = document.getElementById('projectSelect');
+      const projectId = projectSel.value;
+      if (!projectId) {
+        alert('Please select a project to attach this milestone to');
+        return;
+      }
+      const projects = getProjectsFromStorage();
+      const project = projects.find(p => String(p.id) === String(projectId)) || { id: projectId, name: 'Unknown' };
+
+      const due = document.getElementById('milestoneDue').value || '';
+      const newMilestone = { id: Date.now(), name: text, text, due, completed: false, projectId: project.id, projectName: project.name };
+      milestones.push(newMilestone);
+      saveMilestones();
+      input.value = '';
+      document.getElementById('milestoneDue').value = '';
+      projectSel.selectedIndex = 0;
+      renderMilestones();
+      updateProjectStatusForProject(project.id);
+    }
+
+    function deleteMilestone(id) {
+      const idx = milestones.findIndex(m => m.id === id);
+      if (idx > -1) {
+        const projId = milestones[idx] && milestones[idx].projectId;
+        milestones.splice(idx, 1);
+        saveMilestones();
+        renderMilestones();
+        if (projId) updateProjectStatusForProject(projId);
+      }
+    }
+
+    function toggleComplete(id) {
+      const milestone = milestones.find(m => m.id === id);
+      if (milestone) {
+        milestone.completed = !milestone.completed;
+        saveMilestones();
+        renderMilestones();
+        updateProjectStatusForProject(milestone.projectId);
+      }
+    }
+
+    function renderMilestones() {
+      const list = document.getElementById('milestoneList');
+      const today = new Date();
+      list.innerHTML = milestones.map(m => {
+        const dueText = m.due ? formatDate(m.due) : '';
+        const isOverdue = !m.completed && m.due && (new Date(m.due + 'T23:59:59') < today);
+        return `
+        <li class="milestone-item ${m.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}">
+          <input type="checkbox" ${m.completed ? 'checked' : ''} 
+               onchange="toggleComplete(${m.id})" style="margin-right: 10px;">
+          <span onclick="toggleComplete(${m.id})" style="flex: 1; cursor: pointer;" role="button" tabindex="0">${escapeHtml(m.text)}</span>
+          <span class="project-badge">${escapeHtml(m.projectName ? m.projectName : '')}</span>
+          <span class="due-date">${dueText ? 'Due: ' + escapeHtml(dueText) : ''}</span>
+          <button class="delete-btn" onclick="deleteMilestone(${m.id})">Delete</button>
+        </li>
+      `}).join('');
+    }
+
+    // Listen for storage changes from index.html so newly created projects get mirrored here
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY) {
+        loadMilestones();
+        syncProjectsToMilestones();
+      }
+      if (e.key === MILESTONE_KEY) {
+        loadMilestones();
+        populateProjects();
+        renderMilestones();
+      }
+    });
+
+    // Also poll once on load and when the page becomes visible in case storage events didn't fire
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        loadMilestones();
+        syncProjectsToMilestones();
+      }
+    });
+
+    // Initial population/sync
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMilestones();
+      populateProjects();
+      // create auto milestones for current projects (also saves)
+      syncProjectsToMilestones();
+      document.getElementById('milestoneInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addMilestone();
+      });
+    });
+
+    // Update project status in storage according to milestones for a given project
+    function updateProjectStatusForProject(projectId) {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const projects = JSON.parse(raw) || [];
+        const idx = projects.findIndex(p => String(p.id) === String(projectId));
+        if (idx === -1) return;
+        const proj = projects[idx];
+        const related = milestones.filter(m => String(m.projectId) === String(projectId));
+        const total = related.length;
+        const done = related.filter(m => m.completed).length;
+        if (total > 0 && done === total) {
+          if (proj.status !== 'completed') {
+            proj.status = 'completed';
+            projects[idx] = proj;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+          }
+        } else {
+          // if previously completed but now not all done, revert to active
+          if (proj.status === 'completed') {
+            proj.status = 'active';
+            projects[idx] = proj;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+          }
+        }
+      } catch (e) {
+        console.error('Failed to update project status from milestones', e);
+      }
+    }
+    </script>
+</body>
+</html>
