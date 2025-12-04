@@ -1,1 +1,3 @@
 # comp2140-kiserve-management
+
+KiServe is a web-based Project Management System designed for the Kiwanis Club, a global volunteer organization that conducts community service and fundraising projects. The current spreadsheet-based method of tracking projects has become inefficient, especially as the number of initiatives grows. KiServe will modernize this process by enabling authorized users to manage projects, monitor progress, allocate resources, and generate automated reports. The system emphasizes transparency, accountability, and operational efficiency while supporting the club’s mission of improving lives through service.
