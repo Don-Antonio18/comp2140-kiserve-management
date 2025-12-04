@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Automated Report Generation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="reportstyle.css">
+</head>
+
+<body>
+    <style>
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            background: #ffffff;
+            border-bottom: 1px solid #e6e9ef;
+            border-radius: 6px;
+            margin-bottom: 12px
+        }
+
+        .site-header .brand h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #1f2a44
+        }
+
+        .site-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .site-nav .nav-link {
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 6px;
+            color: #0366d6;
+            font-weight: 600;
+            background: transparent
+        }
+
+        .site-nav .nav-link:hover {
+            background: #f0f6ff
+        }
+
+        @media(max-width:600px) {
+            .site-header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start
+            }
+        }
+    </style>
+    <div class="app">
+        <header class="site-header">
+            <div class="brand">
+                <h1>Project Manager</h1>
+            </div>
+            <nav class="site-nav">
+                <a class="nav-link" href="view-project.html">Home</a>
+                <a class="nav-link" href="index.html">Manage Projects</a>
+                <a class="nav-link" href="milestone.html">View Milestones</a>
+                <a class="nav-link" href="dashboard.html">Dashboard</a>
+            </nav>
+        </header>
+        <h1>Automated Report Generation</h1>
+        <p class="subtitle">
+            Generate a standard report for all completed and ongoing projects within a time period.
+        </p>
+
+        <!-- ========== REPORT FORM ========== -->
+        <form id="reportForm">
+            <div class="full-width">
+                <label for="reportTitle">Report title</label>
+                <input type="text" id="reportTitle" placeholder="e.g. Summer Activities Report">
+            </div>
+
+            <div>
+                <label for="periodStart">Period start date</label>
+                <input type="date" id="periodStart">
+            </div>
+
+            <div>
+                <label for="periodEnd">Period end date</label>
+                <input type="date" id="periodEnd">
+            </div>
+
+            <div>
+                <label for="scheduleDate">Scheduled report date</label>
+                <input type="date" id="scheduleDate">
+            </div>
+
+            <div>
+                <label for="includeStatuses">Include statuses</label>
+                <select id="includeStatuses" multiple>
+                    <option value="completed" selected>Completed</option>
+                    <option value="active" selected>Active (Ongoing)</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <small class="hint">Hold Ctrl (Cmd on Mac) to select multiple.</small>
+            </div>
+
+            <div class="full-width actions">
+                <button type="button" class="btn-secondary" id="clearFormBtn">Clear</button>
+                <button type="submit" class="btn-primary">Generate Report</button>
+            </div>
+        </form>
+
+        <!-- ========== META INFO ========== -->
+        <div class="meta">
+            <span id="projectsSummary">No projects loaded yet.</span>
+            <button class="btn-secondary small-btn" id="reloadBtn">Reload projects</button>
+        </div>
+
+        <!-- ========== REPORT OUTPUT ========== -->
+        <h2 class="section-title">Report Output</h2>
+
+
+        <textarea id="reportOutput" spellcheck="true"></textarea>
+
+        <div class="output-actions">
+            <button class="btn-secondary small-btn" id="copyBtn">Copy to Clipboard</button>
+            <button class="btn-secondary small-btn" id="downloadBtn">Download .txt</button>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+
+        </div>
+    </div>
+
+    <script src="reportscript.js"></script>
+</body>
+
+</html>

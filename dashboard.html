@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiserve Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="dashboardstyles.css">
 </head>
 
 <body>
@@ -13,11 +13,14 @@
         <div class="header-content">
             <div>
                 <h1>Kiserve Dashboard</h1>
+                <p>Project analytics and insights</p>
             </div>
             <div class="header-nav">
-                <!-- Buttons to redirect users  -->
-                <a th:href="@{/projectmanager}" class="btn btn-header">Project Manager</a>
-                <a th:href="@{/auth/logout}" class="btn btn-header">Logout</a>
+
+                <a href="view-project.html" class="btn btn-header">Home</a>
+                <a href="index.html" class="btn btn-header">Manage Projects</a>
+                <a href="milestone.html" class="btn btn-header">Milestones</a>
+                <a href="reportindex.html" class="btn btn-header">Reports</a>
             </div>
         </div>
     </header>
@@ -26,23 +29,23 @@
         <section class="dashboard-cards">
             <div class="card">
                 <h2>Total Projects</h2>
-                <p th:text="${dashboard.totalProjects}">0</p>
+                <p id="totalProjects">0</p>
             </div>
             <div class="card">
                 <h2>Active Projects</h2>
-                <p th:text="${dashboard.activeProjects}">0</p>
+                <p id="activeProjects">0</p>
             </div>
             <div class="card">
                 <h2>Completed Projects</h2>
-                <p th:text="${dashboard.completedProjects}">0</p>
+                <p id="completedProjects">0</p>
             </div>
             <div class="card">
-                <h2>Upcoming Milestones</h2>
-                <p th:text="${dashboard.upcomingMilestones}">0</p>
+                <h2>Total Milestones</h2>
+                <p id="totalMilestones">0</p>
             </div>
             <div class="card">
-                <h2>Overdue Milestones</h2>
-                <p th:text="${dashboard.overdueMilestones}">0</p>
+                <h2>Completed Milestones</h2>
+                <p id="completedMilestones">0</p>
             </div>
         </section>
 
@@ -56,7 +59,7 @@
                         <option value="">-- All --</option>
                         <option value="active">Active</option>
                         <option value="completed">Completed</option>
-                        <option value="upcoming">Upcoming</option>
+                        <option value="pending">Pending</option>
                     </select>
                 </div>
 
@@ -64,33 +67,18 @@
                     <label for="filterTag">Tag:</label>
                     <select id="filterTag">
                         <option value="">-- All --</option>
-                        <option value="infrastructure">Infrastructure</option>
-                        <option value="education">Education</option>
-                        <option value="health">Health</option>
-                        <option value="community">Community</option>
-                        <option value="priorityA">Priority A</option>
-                        <option value="priorityB">Priority B</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="filterCommittee">Committee:</label>
-                    <select id="filterCommittee">
-                        <option value="">-- All --</option>
-                        <option value="Committee A">Committee A</option>
-                        <option value="Committee B">Committee B</option>
-                        <option value="Committee C">Committee C</option>
                     </select>
                 </div>
 
                 <div class="control-group">
                     <label for="sortBy">Sort By:</label>
                     <select id="sortBy">
-                        <option value="date">Date</option>
-                        <option value="progress">Progress</option>
-                        <option value="hours">Hours</option>
-                        <option value="value">Value</option>
-                        <option value="beneficiaries">Beneficiaries</option>
+                        <option value="name">Name</option>
+                        <option value="startDate">Start Date</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="hoursPlanning">Planning Hours</option>
+                        <option value="hoursExecuting">Executing Hours</option>
+                        <option value="peopleImpacted">People Impacted</option>
                     </select>
                 </div>
 
@@ -102,7 +90,7 @@
                     </select>
                 </div>
 
-                <div class="control-group">
+                <div class="control-group control-buttons">
                     <button id="applyFiltersBtn" class="btn btn-primary">Apply Filters</button>
                     <button id="resetFiltersBtn" class="btn btn-secondary">Reset</button>
                 </div>
@@ -114,48 +102,47 @@
             <h2>Charts &amp; Insights</h2>
 
             <div class="charts-container">
-                <!-- Time-series chart: Projects, Hours, Value -->
+                <!-- projects over time chart -->
                 <div class="chart-wrapper">
-                    <h3>Project Metrics Over Time</h3>
+                    <h3>Projects Over Time</h3>
                     <canvas id="timeSeriesChart" width="400" height="200"></canvas>
                 </div>
 
-                <!-- Bar chart: Tag distribution -->
+                <!-- tag distribution chart -->
                 <div class="chart-wrapper">
-                    <h3>Projects by Tag (%)</h3>
+                    <h3>Projects by Tag</h3>
                     <canvas id="tagDistributionChart" width="400" height="200"></canvas>
                 </div>
 
-                <!-- Pie chart: Status distribution -->
+                <!-- status pie chart -->
                 <div class="chart-wrapper">
                     <h3>Project Status Distribution</h3>
                     <canvas id="statusDistributionChart" width="400" height="200"></canvas>
                 </div>
 
-                <!-- Bar chart: Committee breakdown -->
+                <!-- comittee lifetime chart -->
                 <div class="chart-wrapper">
-                    <h3>Projects by Committee</h3>
+                    <h3>Lifetime Club projects</h3>
                     <canvas id="committeeChart" width="400" height="200"></canvas>
                 </div>
 
-                <!-- Line chart: Volunteer hours vs beneficiaries -->
+                <!-- hours vs people impacted chart -->
                 <div class="chart-wrapper">
-                    <h3>Hours vs Beneficiaries</h3>
-                    <canvas id="hoursVsBeneficiariesChart" width="400" height="200"></canvas>
+                    <h3>Hours vs People Impacted</h3>
+                    <canvas id="hoursVsImpactChart" width="400" height="200"></canvas>
                 </div>
 
-                <!-- Doughnut chart: Value distribution -->
+                <!-- total hours per project chart -->
                 <div class="chart-wrapper">
-                    <h3>Project Value Distribution</h3>
-                    <canvas id="valueDistributionChart" width="400" height="200"></canvas>
+                    <h3>Total Hours by Project</h3>
+                    <canvas id="totalHoursChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- include Chart.js and your dashboard script -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script th:src="@{/js/dashboard.js}"></script>
+    <script src="dashboard.js"></script>
 </body>
 
 </html>

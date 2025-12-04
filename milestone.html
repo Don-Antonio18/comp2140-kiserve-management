@@ -1,56 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project Milestones</title>
   <style>
-      /* shared site header styles (matches index.html) */
-      .site-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#ffffff;border-bottom:1px solid #e6e9ef;border-radius:6px}
-      .site-header .brand h1{font-size:20px;margin:0;color:#1f2a44}
-      .site-nav{display:flex;gap:10px;align-items:center}
-      .site-nav .nav-link{padding:8px 12px;text-decoration:none;border-radius:6px;color:#0366d6;font-weight:600;background:transparent}
-      .site-nav .nav-link:hover{background:#f0f6ff}
-      @media(max-width:600px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
+    /* shared site header styles (matches index.html) */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid #e6e9ef;
+      border-radius: 6px
+    }
+
+    .site-header .brand h1 {
+      font-size: 20px;
+      margin: 0;
+      color: #1f2a44
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .site-nav .nav-link {
+      padding: 8px 12px;
+      text-decoration: none;
+      border-radius: 6px;
+      color: #0366d6;
+      font-weight: 600;
+      background: transparent
+    }
+
+    .site-nav .nav-link:hover {
+      background: #f0f6ff
+    }
+
+    @media(max-width:600px) {
+      .site-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start
+      }
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       padding: 20px;
     }
+
     .container {
       max-width: 800px;
       margin: 0 auto;
       background-color: white;
       padding: 30px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
+
     h1 {
       color: #333;
       margin-bottom: 30px;
     }
+
     .input-section {
       display: flex;
       gap: 10px;
       margin-bottom: 30px;
     }
-    input, button {
+
+    input,
+    button {
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
+
     input {
       flex: 1;
     }
+
     input[type="date"] {
       max-width: 170px;
     }
+
     select#projectSelect {
       max-width: 220px;
       padding: 8px;
@@ -58,6 +105,7 @@
       border: 1px solid #ddd;
       background: white;
     }
+
     .project-badge {
       display: inline-block;
       background: #eef6ff;
@@ -67,32 +115,39 @@
       font-size: 12px;
       margin-right: 8px;
     }
+
     .due-date {
       margin-left: 12px;
       font-size: 13px;
       color: #555;
       margin-right: 10px;
     }
+
     .milestone-item.overdue {
       border-left: 4px solid #ff6b6b;
       background-color: #fff5f5;
     }
+
     .milestone-item.overdue .due-date {
       color: #c00;
       font-weight: 600;
     }
+
     button {
       background-color: #007bff;
       color: white;
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     .milestone-list {
       list-style: none;
     }
+
     .milestone-item {
       display: flex;
       justify-content: space-between;
@@ -103,34 +158,42 @@
       margin-bottom: 10px;
       background-color: #f9f9f9;
     }
+
     .milestone-item.completed {
       background-color: #e8f5e9;
       text-decoration: line-through;
       color: #888;
     }
+
     .delete-btn {
       background-color: #dc3545;
       padding: 5px 10px;
       font-size: 12px;
     }
+
     .delete-btn:hover {
       background-color: #c82333;
     }
   </style>
 </head>
+
 <body>
   <header class="site-header">
-    <div class="brand"><h1>Project Manager</h1></div>
+    <div class="brand">
+      <h1>Project Manager</h1>
+    </div>
     <nav class="site-nav">
       <a class="nav-link" href="view-project.html">Home</a>
-      <a class="nav-link" href="index.html">Create Project</a>
+      <a class="nav-link" href="index.html">Manage Projects</a>
       <a class="nav-link" href="milestone.html">View Milestones</a>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+
     </nav>
   </header>
 
   <div class="container">
     <h1>📋 Project Milestones</h1>
-    
+
     <div class="input-section">
       <input type="text" id="milestoneInput" placeholder="Enter milestone name...">
       <select id="projectSelect" aria-label="Project" title="Attach to project"></select>
@@ -141,7 +204,7 @@
     <ul class="milestone-list" id="milestoneList"></ul>
   </div>
 
-    <script>
+  <script>
     const MILESTONE_KEY = 'myMilestones';
     // Storage key used by the main app (index.html)
     const STORAGE_KEY = 'myProjects';
@@ -194,7 +257,7 @@
     }
 
     function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+      return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
     }
 
     function formatDate(isoDate) {
@@ -225,8 +288,8 @@
         if (!knownProjectIds.has(p.id)) {
           const startDue = p.startDate || '';
           const endDue = p.dueDate || '';
-          milestones.push({ id: Date.now() + Math.floor(Math.random()*1000), name: 'Commence', text: 'Commence', due: startDue, completed: false, projectId: p.id, projectName: p.name });
-          milestones.push({ id: Date.now() + 2000 + Math.floor(Math.random()*1000), name: 'Conclude', text: 'Conclude', due: endDue, completed: false, projectId: p.id, projectName: p.name });
+          milestones.push({ id: Date.now() + Math.floor(Math.random() * 1000), name: 'Commence', text: 'Commence', due: startDue, completed: false, projectId: p.id, projectName: p.name });
+          milestones.push({ id: Date.now() + 2000 + Math.floor(Math.random() * 1000), name: 'Conclude', text: 'Conclude', due: endDue, completed: false, projectId: p.id, projectName: p.name });
           knownProjectIds.add(p.id);
         }
       });
@@ -296,7 +359,7 @@
         const isOverdue = !m.completed && m.due && (new Date(m.due + 'T23:59:59') < today);
         return `
         <li class="milestone-item ${m.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}">
-          <input type="checkbox" ${m.completed ? 'checked' : ''} 
+          <input type="checkbox" ${m.completed ? 'checked' : ''}
                onchange="toggleComplete(${m.id})" style="margin-right: 10px;">
           <span onclick="toggleComplete(${m.id})" style="flex: 1; cursor: pointer;" role="button" tabindex="0">${escapeHtml(m.text)}</span>
           <span class="project-badge">${escapeHtml(m.projectName ? m.projectName : '')}</span>
@@ -368,6 +431,7 @@
         console.error('Failed to update project status from milestones', e);
       }
     }
-    </script>
+  </script>
 </body>
+
 </html>
