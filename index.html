@@ -1,135 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <title>Project Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style.css">
-        <style>
-            .site-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#ffffff;border-bottom:1px solid #e6e9ef;border-radius:6px}
-            .site-header .brand h1{font-size:20px;margin:0;color:#1f2a44}
-            .site-nav{display:flex;gap:10px;align-items:center}
-            .site-nav .nav-link{padding:8px 12px;text-decoration:none;border-radius:6px;color:#0366d6;font-weight:600;background:transparent}
-            .site-nav .nav-link:hover{background:#f0f6ff}
-            @media(max-width:600px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
-        </style>
+    <style>
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            background: #ffffff;
+            border-bottom: 1px solid #e6e9ef;
+            border-radius: 6px
+        }
+
+        .site-header .brand h1 {
+            font-size: 20px;
+            margin: 0;
+            color: #1f2a44
+        }
+
+        .site-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .site-nav .nav-link {
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 6px;
+            color: #0366d6;
+            font-weight: 600;
+            background: transparent
+        }
+
+        .site-nav .nav-link:hover {
+            background: #f0f6ff
+        }
+
+        @media(max-width:600px) {
+            .site-header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div class="app">
+    <div class="app">
         <header class="site-header">
-            <div class="brand"><h1>Project Manager</h1></div>
+            <div class="brand">
+                <h1>Project Manager</h1>
+            </div>
             <nav class="site-nav">
                 <a class="nav-link" href="view-project.html">Home</a>
-                <a class="nav-link" href="index.html">Create Project</a>
+                <a class="nav-link" href="create-project.html">Create Project</a>
                 <a class="nav-link" href="milestone.html">View Milestones</a>
+                <a class="nav-link" href="dashboard.html">Dashboard</a>
+                <a class="nav-link" href="reportindex.html">Reports</a>
             </nav>
         </header>
         <p class="subtitle">Centralize all project information for easier tracking and reporting.</p>
 
-    <!-- ====================== PROJECT FORM ======================= -->
-    <form id="projectForm">
+        <!-- ====================== PROJECT FORM ======================= -->
+        <form id="projectForm">
 
-        <!-- Project Name + Status -->
-        <div>
-            <label for="name">Project name *</label>
-            <input type="text" id="name" required placeholder="e.g. Outreach Drive, Beach Clean-Up, etc.">
+            <!-- Project Name + Status -->
+            <div>
+                <label for="name">Project name *</label>
+                <input type="text" id="name" required placeholder="e.g. Outreach Drive, Beach Clean-Up, etc.">
+            </div>
+
+            <div>
+                <label for="status">Status</label>
+                <select id="status">
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <!-- Start + End Dates -->
+            <div>
+                <label for="startDate">Start date</label>
+                <input type="date" id="startDate">
+            </div>
+
+            <div>
+                <label for="dueDate">End / due date</label>
+                <input type="date" id="dueDate">
+            </div>
+
+            <!-- Location + Committee -->
+            <div>
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="e.g. Mona Campus, Community Centre">
+            </div>
+
+            <div>
+                <label for="committee">Committee name</label>
+                <input type="text" id="committee" placeholder="e.g. Projects & Planning Committee">
+            </div>
+
+            <!-- Planning + Executing Hours -->
+            <div>
+                <label for="hoursPlanning">Hours spent planning</label>
+                <input type="number" id="hoursPlanning" min="0" step="0.5" placeholder="e.g. 10">
+            </div>
+
+            <div>
+                <label for="hoursExecuting">Hours spent executing</label>
+                <input type="number" id="hoursExecuting" min="0" step="0.5" placeholder="e.g. 6">
+            </div>
+
+            <!-- Team Members -->
+            <div class="full-width">
+                <label for="teamMembers">Team members involved</label>
+                <textarea id="teamMembers" placeholder="List names, e.g. Aliyah (Lead), John (Logistics)..."></textarea>
+            </div>
+
+            <!-- Beneficiaries -->
+            <div class="full-width">
+                <label for="beneficiaries">Beneficiaries</label>
+                <textarea id="beneficiaries"
+                    placeholder="Who benefited? e.g. First-year students, community residents..."></textarea>
+            </div>
+
+            <!-- People Impacted + Tag -->
+            <div>
+                <label for="peopleImpacted">Number of people impacted</label>
+                <input type="number" id="peopleImpacted" min="0" step="1" placeholder="e.g. 150">
+            </div>
+
+            <div>
+                <label for="tag">Tag (optional)</label>
+                <input type="text" id="tag" placeholder="e.g. JOSA, UWI, Outreach">
+            </div>
+
+            <!-- Description -->
+            <div class="full-width">
+                <label for="description">Brief project description / notes</label>
+                <textarea id="description" placeholder="Short overview, key outcomes, notes..."></textarea>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="full-width actions">
+                <button type="button" class="btn-secondary" id="clearFormBtn">Clear</button>
+                <button type="submit" id="submitBtn" class="btn-primary">+ Add Project</button>
+                <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;">Cancel
+                    Edit</button>
+                <button type="button" class="btn-secondary" id="loadSampleBtn">Load Sample Data</button>
+            </div>
+        </form>
+
+        <!-- ====================== META + PROJECT LIST ======================= -->
+        <div class="meta">
+            <span id="projectCount">0 projects saved</span>
+            <button class="btn-secondary small-btn" id="clearAllBtn">Clear All</button>
         </div>
 
-        <div>
-            <label for="status">Status</label>
-            <select id="status">
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-            </select>
-        </div>
+        <!-- CARD LAYOUT (replaces table) -->
+        <div id="projectsBody"></div>
 
-        <!-- Start + End Dates -->
-        <div>
-            <label for="startDate">Start date</label>
-            <input type="date" id="startDate">
+        <div id="emptyState" class="empty-state">
+            No projects yet. Add your first project above
         </div>
-
-        <div>
-            <label for="dueDate">End / due date</label>
-            <input type="date" id="dueDate">
-        </div>
-
-        <!-- Location + Committee -->
-        <div>
-            <label for="location">Location</label>
-            <input type="text" id="location" placeholder="e.g. Mona Campus, Community Centre">
-        </div>
-
-        <div>
-            <label for="committee">Committee name</label>
-            <input type="text" id="committee" placeholder="e.g. Projects & Planning Committee">
-        </div>
-
-        <!-- Planning + Executing Hours -->
-        <div>
-            <label for="hoursPlanning">Hours spent planning</label>
-            <input type="number" id="hoursPlanning" min="0" step="0.5" placeholder="e.g. 10">
-        </div>
-
-        <div>
-            <label for="hoursExecuting">Hours spent executing</label>
-            <input type="number" id="hoursExecuting" min="0" step="0.5" placeholder="e.g. 6">
-        </div>
-
-        <!-- Team Members -->
-        <div class="full-width">
-            <label for="teamMembers">Team members involved</label>
-            <textarea id="teamMembers" placeholder="List names, e.g. Aliyah (Lead), John (Logistics)..."></textarea>
-        </div>
-
-        <!-- Beneficiaries -->
-        <div class="full-width">
-            <label for="beneficiaries">Beneficiaries</label>
-            <textarea id="beneficiaries" placeholder="Who benefited? e.g. First-year students, community residents..."></textarea>
-        </div>
-
-        <!-- People Impacted + Tag -->
-        <div>
-            <label for="peopleImpacted">Number of people impacted</label>
-            <input type="number" id="peopleImpacted" min="0" step="1" placeholder="e.g. 150">
-        </div>
-
-        <div>
-            <label for="tag">Tag (optional)</label>
-            <input type="text" id="tag" placeholder="e.g. JOSA, UWI, Outreach">
-        </div>
-
-        <!-- Description -->
-        <div class="full-width">
-            <label for="description">Brief project description / notes</label>
-            <textarea id="description" placeholder="Short overview, key outcomes, notes..."></textarea>
-        </div>
-
-        <!-- Form Buttons -->
-        <div class="full-width actions">
-            <button type="button" class="btn-secondary" id="clearFormBtn">Clear</button>
-            <button type="submit" id="submitBtn" class="btn-primary">+ Add Project</button>
-            <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;">Cancel Edit</button>
-            <button type="button" class="btn-secondary" id="loadSampleBtn">Load Sample Data</button>
-        </div>
-    </form>
-
-    <!-- ====================== META + PROJECT LIST ======================= -->
-    <div class="meta">
-        <span id="projectCount">0 projects saved</span>
-        <button class="btn-secondary small-btn" id="clearAllBtn">Clear All</button>
     </div>
 
-    <!-- CARD LAYOUT (replaces table) -->
-    <div id="projectsBody"></div>
-
-    <div id="emptyState" class="empty-state">
-        No projects yet. Add your first project above 
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
